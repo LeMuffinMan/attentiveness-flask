@@ -3,7 +3,7 @@ enum-compat
 enum34
 eventlet
 Flask
-Flask-SocketIO
+Flask-SocketIO==4.3.2
 gevent
 gevent-websocket
 greenlet
