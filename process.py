@@ -8,8 +8,6 @@ import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 import time
-import pandas as pd
-# import json
 from IPython.display import clear_output
 torch.set_printoptions(linewidth=120)
 torch.set_grad_enabled(True)
@@ -47,48 +45,40 @@ class Network(nn.Module):
 
 		return t
 
-model = torch.load('modelResults.pt')
-
 class webopencv(object):
 	def __init__(self):
 		pass
 
 	def process(self, img):
 		img = np.array(img)
-		# img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-		# gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 		gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 
-		# gray = np.array(img)
-		# gray= np.array2string(img)
-		# gray=cv2.imread(gray, 0)
-		#gray = cv2.cvtColor(gray, cv2.COLOR_RGB2GRAY)
-		#gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 		faces = face_cascade.detectMultiScale(gray, 1.1, 4)
-
 		for (x, y, w, h) in faces:
 			cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
 
-			grayFrameCropped = img[y:y+h, x:x+w]
+			grayFrameCropped = gray[y:y+h, x:x+w]
 			dim = (48,48)
 			grayFrameCroppedResized = cv2.resize(grayFrameCropped, dim, interpolation = cv2.INTER_AREA)
+
 			grayFrameCroppedResizedTensor = torch.from_numpy(grayFrameCroppedResized)
 			grayFrameCroppedResizedTensorChannel = grayFrameCroppedResizedTensor.unsqueeze(dim=0).type(torch.FloatTensor)
 			grayFrameCroppedResizedTensorChannelDim = grayFrameCroppedResizedTensorChannel.unsqueeze(dim=0).type(torch.FloatTensor)
-			#  I am not sorry for naming this variable "grayFrameCroppedResizedTensorChannelDim"
-			
+
+			model = Network()
+			state_dict = torch.load('model_state_dict.pt')
+			model.load_state_dict(state_dict)
+
 			result = model(grayFrameCroppedResizedTensorChannelDim)
+
 			m = nn.Softmax()
 			predictions = m(result)
 			prediction = torch.argmax(predictions).item()
-
 			confidence = torch.max(predictions)
-
 			classList = ["Angry", "Disgust", "Fear", "Happy", "Sad", "Surprise", "Neutral"]
 			classification = classList[prediction]
 			cv2.putText(img, classification, (x, y-10), cv2.FONT_HERSHEY_COMPLEX, 0.9, (36,255,12), 2)
 
-		# #img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 		img = Image.fromarray(img)
 
 		return img

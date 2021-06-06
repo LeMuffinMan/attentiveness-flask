@@ -21,6 +21,17 @@ $(document).ready(function(){
 
   socket.on('connect', function() {
     console.log('Connected!');
+    const sessionID = socket.id;
+    console.log(sessionID)
+    var imageElement = document.getElementById("imageElement");
+    var userID = sessionID.replace("/test#", "")
+    console.log(userID);
+    
+    var tempp = '/video_feed/'.concat(userID);
+    console.log(tempp);  
+    console.log(imageElement.src);
+    imageElement.src = "http://localhost:5000".concat(tempp)
+    console.log(imageElement.src);
   });
 
   var constraints = {

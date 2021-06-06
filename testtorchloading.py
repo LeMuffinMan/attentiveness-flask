@@ -56,6 +56,7 @@ class webopencv(object):
 
 	def process(self):
 		model = torch.load("modelResults.pt")
+		torch.save(model.state_dict(), "model_state_dict.pt")
 
 
 w = webopencv()

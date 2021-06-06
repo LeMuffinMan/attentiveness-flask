@@ -1,3 +1,4 @@
+import sys
 from sys import stdout
 from process import webopencv
 import logging
@@ -5,7 +6,9 @@ from flask import Flask, render_template, Response, request, jsonify
 from flask_socketio import SocketIO
 from camera import Camera
 from utils import base64_to_pil_image, pil_image_to_base64
+import random
 # import jsonify
+
 
 
 #----------------- Video Transmission ------------------------------#
@@ -21,15 +24,21 @@ camera = Camera(webopencv())
 #---------------- Video Socket Connections --------------------------#
 @socketio.on('input image', namespace='/test')
 def test_message(input):
+	# print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+	# sys.stdout.flush()
 	input = input.split(",")[1]
-	camera.enqueue_input(input)
+	camera.enqueue_input([input, (request.sid)])
 	#camera.enqueue_input(base64_to_pil_image(input))
 
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
 	app.logger.info("client connected")
-
+	userID = request.sid
+	#userID = random.randint(1, 100000000)
+	print(str(userID)+ " CONNECTED --------------------")
+	sys.stdout.flush()
+	#connect func on line 24 on main.js
 
 @app.route('/')
 def index():
@@ -37,20 +46,23 @@ def index():
 	return render_template('index.html')
 
 
-def gen():
+def gen(userID):
 	"""Video streaming generator function."""
 
 	app.logger.info("starting to generate frames!")
 	while True:
-		frame = camera.get_frame() #pil_image_to_base64(camera.get_frame())
+		# userID = request.sid
+		# print(userID)
+		# sys.stdout.flush()
+		frame = camera.get_frame(userID) #pil_image_to_base64(camera.get_frame())
 		yield (b'--frame\r\n'
 			   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-
-@app.route('/video_feed')
-def video_feed():
+@app.route('/', defaults={'userID': ''})
+@app.route('/video_feed/<userID>')
+def video_feed(userID):
 	"""Video streaming route. Put this in the src attribute of an img tag."""
-	return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
+	return Response(gen(userID), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 if __name__ == '__main__':
