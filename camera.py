@@ -21,26 +21,19 @@ class Camera(object):
 			return
 
 		# input is an ascii string. 
-		#input_str[userID] = self.to_process.pop(userID)
 		input_str, userID = self.to_process.pop(0)   # 0th item will be tuple of frame,userID
-		#####input_str = self.to_process.pop(0)
 
 		# convert it to a pil image
 		input_img = base64_to_pil_image(input_str)
-		######input_img = base64_to_pil_image(input_str)
 
-		################## where the hard work is done ############
 		# output_img is an PIL image
 		output_img = self.process.process(input_img)
-		#####output_img = self.process.process(input_img)
 
 		# output_str is a base64 string in ascii
 		output_str = pil_image_to_base64(output_img)
-		#####output_str = pil_image_to_base64(output_img)
 
 		# convert eh base64 string in ascii to base64 string in _bytes_
 		self.to_output[userID] = binascii.a2b_base64(output_str)
-		#####self.to_output.append(binascii.a2b_base64(output_str))
 
 	def keep_processing(self):
 		while True:
@@ -49,11 +42,9 @@ class Camera(object):
 
 	def enqueue_input(self, input):
 		self.to_process.append(input)
-		#####self.to_process.append(input[0])
 
 	def get_frame(self, userID):
 		while not ((userID in self.to_output) and (self.to_output[userID])):
 			sleep(0.05)
 		return self.to_output.pop(userID, None)
-		#####return self.to_output.pop(userID)
 
