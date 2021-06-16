@@ -21,7 +21,7 @@ class Camera(object):
 			return
 
 		# input is an ascii string. 
-		input_str, userID = self.to_process.pop(0)   # 0th item will be tuple of frame,userID
+		input_str, userID = self.to_process.pop(0)
 
 		# convert it to a pil image
 		input_img = base64_to_pil_image(input_str)

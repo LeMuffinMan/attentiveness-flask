@@ -7,7 +7,6 @@ from flask_socketio import SocketIO
 from camera import Camera
 from utils import base64_to_pil_image, pil_image_to_base64
 import random
-# import jsonify
 
 
 
@@ -24,21 +23,16 @@ camera = Camera(webopencv())
 #---------------- Video Socket Connections --------------------------#
 @socketio.on('input image', namespace='/test')
 def test_message(input):
-	# print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-	# sys.stdout.flush()
 	input = input.split(",")[1]
 	camera.enqueue_input([input, (request.sid)])
-	#camera.enqueue_input(base64_to_pil_image(input))
 
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
 	app.logger.info("client connected")
 	userID = request.sid
-	#userID = random.randint(1, 100000000)
 	print(str(userID)+ " CONNECTED --------------------")
 	sys.stdout.flush()
-	#connect func on line 24 on main.js
 
 @app.route('/')
 def index():
@@ -51,10 +45,7 @@ def gen(userID):
 
 	app.logger.info("starting to generate frames!")
 	while True:
-		# userID = request.sid
-		# print(userID)
-		# sys.stdout.flush()
-		frame = camera.get_frame(userID) #pil_image_to_base64(camera.get_frame())
+		frame = camera.get_frame(userID) 
 		yield (b'--frame\r\n'
 			   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
