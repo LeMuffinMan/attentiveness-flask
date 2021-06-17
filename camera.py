@@ -38,7 +38,7 @@ class Camera(object):
 	def keep_processing(self):
 		while True:
 			self.process_one()
-			sleep(0.01)
+			sleep(0.1)
 
 	def enqueue_input(self, input):
 		self.to_process.append(input)
