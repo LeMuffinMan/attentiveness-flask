@@ -7,6 +7,7 @@ from flask_socketio import SocketIO
 from camera import Camera
 from utils import base64_to_pil_image, pil_image_to_base64
 import random
+from time import sleep
 
 
 
@@ -48,7 +49,8 @@ def gen(userID):
 		frame = camera.get_frame(userID) 
 		yield (b'--frame\r\n'
 			   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
+		sleep(0.2)
+		
 @app.route('/', defaults={'userID': ''})
 @app.route('/video_feed/<userID>')
 def video_feed(userID):
