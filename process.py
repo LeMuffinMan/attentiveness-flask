@@ -9,6 +9,7 @@ import torchvision
 import torchvision.transforms as transforms
 import time
 from IPython.display import clear_output
+
 torch.set_printoptions(linewidth=120)
 torch.set_grad_enabled(True)
 
@@ -52,7 +53,6 @@ class webopencv(object):
 	def process(self, img):
 		img = np.array(img)
 		gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-
 		faces = face_cascade.detectMultiScale(gray, 1.1, 4)
 		for (x, y, w, h) in faces:
 			cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)

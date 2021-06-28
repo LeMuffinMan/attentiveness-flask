@@ -38,13 +38,13 @@ class Camera(object):
 	def keep_processing(self):
 		while True:
 			self.process_one()
-			sleep(0.01)
+			sleep(0.005)
 
 	def enqueue_input(self, input):
 		self.to_process.append(input)
 
 	def get_frame(self, userID):
 		while not ((userID in self.to_output) and (self.to_output[userID])):
-			sleep(0.01)
+			sleep(0.005)
 		return self.to_output.pop(userID, None)
 
