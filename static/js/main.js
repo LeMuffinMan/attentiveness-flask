@@ -30,7 +30,7 @@ $(document).ready(function(){
     var tempp = '/video_feed/'.concat(userID);
     console.log(tempp);  
     console.log(imageElement.src);
-    imageElement.src = "https://webcam-attentiveness.herokuapp.com/".concat(tempp)
+    imageElement.src = (imageElement.src).concat(tempp)
     console.log(imageElement.src);
   });
 
@@ -47,7 +47,7 @@ $(document).ready(function(){
 
     setInterval(function () {
       sendSnapshot();
-    }, 50);
+    }, 500);
   }).catch(function(error) {
     console.log(error);
   });
