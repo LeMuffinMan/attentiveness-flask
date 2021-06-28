@@ -45,6 +45,6 @@ class Camera(object):
 
 	def get_frame(self, userID):
 		while not ((userID in self.to_output) and (self.to_output[userID])):
-			sleep(0.05)
+			sleep(0.01)
 		return self.to_output.pop(userID, None)
 

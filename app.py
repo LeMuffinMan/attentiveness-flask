@@ -26,6 +26,7 @@ camera = Camera(webopencv())
 def test_message(input):
 	input = input.split(",")[1]
 	camera.enqueue_input([input, (request.sid)])
+	sleep(0.2)
 
 
 @socketio.on('connect', namespace='/test')
@@ -49,7 +50,6 @@ def gen(userID):
 		frame = camera.get_frame(userID) 
 		yield (b'--frame\r\n'
 			   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-		sleep(0.2)
 		
 @app.route('/', defaults={'userID': ''})
 @app.route('/video_feed/<userID>')
